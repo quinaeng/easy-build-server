@@ -28,7 +28,7 @@
 
 ```
 {
-  "log-driver": "syslog",
+  "log-driver": "syslog"
 }
 
 ```
