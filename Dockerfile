@@ -1,1 +1,0 @@
-FROM ubuntu/squid:latest

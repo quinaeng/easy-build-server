@@ -1,0 +1,61 @@
+version: '3.8'
+services:
+  wordpress:
+    container_name: wordpress
+    image: wordpress
+    ports:
+      - "80:80"
+    volumes:
+      - type: bind
+        source: ./config/wordpress/wp-config.php
+        target: /var/www/html/wp-config.php
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_USER: wpuser
+      WORDPRESS_DB_PASSWORD: dbpass
+      WORDPRESS_DB_NAME: wordpress
+    depends_on:
+      mariadb:
+        condition: service_started
+    logging:
+      driver: syslog
+      options:
+        tag: '{{.Name}}'
+    restart: always
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    volumes:
+      - type: volume
+        source: db_vol
+        target: /var/run/mysqld/
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_PASSWORD: dbpass
+      MARIADB_ROOT_PASSWORD: P@ssw0rd
+#     MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: yes
+      MARIADB_USER: wpuser
+    restart: always
+    logging:
+      driver: syslog
+      options:
+        tag: '{{.Name}}'
+    restart: always
+
+networks:
+  default:
+    name: core_nw
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: core_nw
+    ipam:
+     driver: default
+     config:
+       - subnet: 10.0.0.0/24
+
+volumes:
+    db_vol:
+      name: db_vol
+      driver: local
