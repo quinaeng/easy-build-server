@@ -42,7 +42,6 @@ services:
       driver: syslog
       options:
         tag: '{{.Name}}'
-#   restart: always
 
 networks:
   default:
