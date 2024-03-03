@@ -42,7 +42,7 @@ services:
       driver: syslog
       options:
         tag: '{{.Name}}'
-    restart: always
+#   restart: always
 
 networks:
   default:
